@@ -1,63 +1,63 @@
-# AI PDF Chatbot & Agent Powered by LangChain and LangGraph
+# AI PDF Chatbot & Agent — Powered by LangChain and LangGraph
 
-This monorepo is a customizable template example of an AI chatbot agent that "ingests" PDF documents, stores embeddings in a vector database (Supabase), and then answers user queries using OpenAI (or another LLM provider) utilising LangChain and LangGraph as orchestration frameworks.
+[![Next.js](https://img.shields.io/badge/Next.js-13-black?logo=next.js)](https://nextjs.org/)
+[![LangChain](https://img.shields.io/badge/LangChain-v0.1-blue)](https://www.langchain.com/)
+[![LangGraph](https://img.shields.io/badge/LangGraph-Orchestration-brightgreen)](https://www.langchain.com/langgraph)
+[![Supabase](https://img.shields.io/badge/Supabase-Vector_Store-3FCF8E?logo=supabase)](https://supabase.com/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-API-412991?logo=openai)](https://platform.openai.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-This template is also an accompanying example to the book [Learning LangChain (O'Reilly)](https://www.oreilly.com/library/view/learning-langchain/9781098167271): Building AI and LLM applications with LangChain and LangGraph.
-
-**Here's what the Chatbot UI looks like:**
-
-<img width="1096" alt="Screenshot 2025-02-20 at 05 39 55" src="https://github.com/user-attachments/assets/3a9ddea7-b718-476b-bdae-38839be20c12" />
-
-## Table of Contents
-
-1. [Features](#features)
-2. [Architecture Overview](#architecture-overview)
-3. [Prerequisites](#prerequisites)
-4. [Installation](#installation)
-5. [Environment Variables](#environment-variables)
-   - [Frontend Variables](#frontend-variables)
-   - [Backend Variables](#backend-variables)
-6. [Local Development](#local-development)
-   - [Running the Backend](#running-the-backend)
-   - [Running the Frontend](#running-the-frontend)
-7. [Usage](#usage)
-   - [Uploading/Ingesting PDFs](#uploadingingesting-pdfs)
-   - [Asking Questions](#asking-questions)
-   - [Viewing Chat History](#viewing-chat-history)
-8. [Production Build & Deployment](#production-build--deployment)
-9. [Customizing the Agent](#customizing-the-agent)
-10. [Troubleshooting](#troubleshooting)
-11. [Next Steps](#next-steps)
+> 💬 **Chat with your PDFs** — Upload documents, store embeddings in a vector DB, and ask natural language questions powered by LangChain, LangGraph, and OpenAI.
 
 ---
 
-## Features
+## 📸 Preview
 
-- **Document Ingestion Graph**: Upload and parse PDFs into `Document` objects, then store vector embeddings into a vector database (we use Supabase in this example).
-- **Retrieval Graph**: Handle user questions, decide whether to retrieve documents or give a direct answer, then generate concise responses with references to the retrieved documents.
-- **Streaming Responses**: Real-time streaming of partial responses from the server to the client UI.
-- **LangGraph Integration**: Built using LangGraph’s state machine approach to orchestrate ingestion and retrieval, visualise your agentic workflow, and debug each step of the graph.  
-- **Next.js Frontend**: Allows file uploads, real-time chat, and easy extension with React components and Tailwind.
+**Chatbot UI**  
+![Chatbot Screenshot](https://github.com/user-attachments/assets/3a9ddea7-b718-476b-bdae-38839be20c12)
 
 ---
 
-## Architecture Overview
+## 🚀 Features
+
+- **PDF Ingestion Pipeline**  
+  - Parses PDFs into `Document` objects  
+  - Stores vector embeddings in **Supabase** for semantic search  
+
+- **Retrieval Graph**  
+  - Handles user questions  
+  - Retrieves relevant document chunks  
+  - Generates **concise, referenced answers**  
+
+- **Real-Time Streaming**  
+  - Partial responses stream from backend to frontend  
+
+- **LangGraph Orchestration**  
+  - State-machine-based ingestion & retrieval workflows  
+  - Visual workflow debugging in LangGraph Studio  
+
+- **Next.js Frontend**  
+  - File upload UI  
+  - Chat interface with “View Sources”  
+
+---
+
+## 🏗 Architecture Overview
 
 ```ascii
 ┌─────────────────────┐    1. Upload PDFs    ┌───────────────────────────┐
 │Frontend (Next.js)   │ ────────────────────> │Backend (LangGraph)       │
-│ - React UI w/ chat  │                      │ - Ingestion Graph         │
-│ - Upload .pdf files │ <────────────────────┤   + Vector embedding via  │
-└─────────────────────┘    2. Confirmation   │     SupabaseVectorStore   │
-(storing embeddings in DB)
+│ - React chat UI     │                      │ - Ingestion Graph         │
+│ - File uploads      │ <────────────────────┤   + Supabase VectorStore  │
+└─────────────────────┘    2. Confirmation   │                           │
 
 ┌─────────────────────┐    3. Ask questions  ┌───────────────────────────┐
 │Frontend (Next.js)   │ ────────────────────> │Backend (LangGraph)       │
-│ - Chat + SSE stream │                      │ - Retrieval Graph         │
-│ - Display sources   │ <────────────────────┤   + Chat model (OpenAI)   │
+│ - SSE response      │                      │ - Retrieval Graph         │
+│ - Show sources      │ <────────────────────┤   + LLM (OpenAI)          │
 └─────────────────────┘ 4. Streamed answers  └───────────────────────────┘
 
-```
+
 - **Supabase** is used as the vector store to store and retrieve relevant documents at query time.  
 - **OpenAI** (or other LLM providers) is used for language modeling.  
 - **LangGraph** orchestrates the "graph" steps for ingestion, routing, and generating responses.  
